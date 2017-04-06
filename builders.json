@@ -1,0 +1,10 @@
+{
+    "worker1": {
+        "password": "Bn6e82XlJAfe",
+        "arches": [ "x86_64", "i386" ]
+    },
+    "worker2": {
+        "password": "n5pHIbZxLV0J",
+        "arches": [ "x86_64", "i386" ]
+    }
+}
