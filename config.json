@@ -1,0 +1,6 @@
+{
+    "github-uri": "git://github.com/alexlarsson/flathub.git",
+    "flathub-repo": "file:///vcs/gnome/flathub/repo",
+    "flathub-repo-path": "/vcs/gnome/flathub/repo",
+    "flathub-branch": "stable"
+}
