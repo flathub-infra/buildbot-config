@@ -2,5 +2,7 @@
     "github-uri": "git://github.com/alexlarsson/flathub.git",
     "flathub-repo": "file:///vcs/gnome/flathub/repo",
     "flathub-repo-path": "/vcs/gnome/flathub/repo",
-    "flathub-branch": "stable"
+    "flathub-branch": "stable",
+    "flathub-gpg-homedir": "/vcs/gnome/flathub/gpg",
+    "flathub-gpg-key": "01DA958A7DC283BF1D3D208CF154092B3A7124D7"
 }
