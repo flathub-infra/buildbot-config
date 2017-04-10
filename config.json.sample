@@ -6,5 +6,6 @@
     "flathub-branch": "stable",
     "flathub-gpg-homedir": "/vcs/gnome/flathub/gpg",
     "flathub-gpg-key": "01DA958A7DC283BF1D3D208CF154092B3A7124D7",
-    "admin-password": "test"
+    "admin-password": "test",
+    "github-auth-emails": ["alexander.larsson@gmail.com"]
 }
