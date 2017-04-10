@@ -3,7 +3,8 @@
         "password": "Bn6e82XlJAfe",
         "arches": [ "x86_64", "i386" ],
         "checkin": true,
-        "update-repo": true
+        "update-repo": true,
+        "max-builds": 3
     },
     "worker2": {
         "password": "n5pHIbZxLV0J",
