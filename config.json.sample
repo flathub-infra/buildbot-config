@@ -1,5 +1,5 @@
 {
-    "github-uri": "git://github.com/alexlarsson/flathub.git",
+    "github-uri": "git://github.com/flathub/",
     "buildbot-uri": "http://localhost:8010/",
     "flathub-repo": "file:///vcs/gnome/flathub/repo",
     "flathub-repo-path": "/vcs/gnome/flathub/repo",
