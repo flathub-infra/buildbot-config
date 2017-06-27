@@ -1,4 +1,5 @@
 {
+    "buildbot-port": 8010,
     "github-uri": "https://github.com/flathub/",
     "buildbot-uri": "http://localhost:8010/",
     "flathub-repo": "file:///vcs/gnome/flathub/repo",
