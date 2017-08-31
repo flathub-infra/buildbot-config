@@ -24,5 +24,6 @@ done
 for arch in $(ostree --repo=$REPO refs appstream); do
     ostree --repo=$REPO checkout -U --union appstream/$arch $REPO/appstream/$arch;
     zcat $REPO/appstream/$arch/appstream.xml.gz | xsltproc  --param arch $arch  appstream-flathub.xslt - > $REPO/appstream/$arch/apps.html
+    cp download.svg $REPO/appstream/$arch/
 done
 
