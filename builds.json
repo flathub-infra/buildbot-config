@@ -1,0 +1,9 @@
+{
+    "repos": {
+        "default": {
+            "base": "https://github.com/flathub"
+        }
+    },
+    "builds": {
+    }
+}
