@@ -2,8 +2,16 @@
     "repos": {
         "default": {
             "base": "https://github.com/flathub"
+        },
+        "kde": {
+            "base": "https://github.com/KDE"
         }
     },
     "builds": {
+        "org.kde.Sdk/5.9": {
+            "repo": "kde",
+            "git-module": "flatpak-kde-runtime.git",
+            "git-branch": "master"
+        }
     }
 }
