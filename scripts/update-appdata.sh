@@ -1,14 +1,13 @@
 #!/bin/sh
 set -e
-set -x
 
 REPO=$1
 
 mkdir -p $REPO/appstream
 
 for app in $(ostree refs --repo=$REPO app | grep /stable | sed s@/.*@@ | sort -u); do
-    echo $REPO/${app}.flatpakref
     if ! test -f $REPO/appstream/${app}.flatpakref; then
+        echo Creating $REPO/appstream/${app}.flatpakref
         cat > $REPO/appstream/${app}.flatpakref <<EOF
 [Flatpak Ref]
 Name=$app
@@ -22,7 +21,7 @@ EOF
 done
 
 for arch in $(ostree --repo=$REPO refs appstream); do
+    echo Updating appstream for $arch
     ostree --repo=$REPO checkout -U --union appstream/$arch $REPO/appstream/$arch;
-    zcat $REPO/appstream/$arch/appstream.xml.gz | xsltproc  --param arch $arch  appstream-flathub.xslt - > $REPO/appstream/$arch/apps.html
 done
 
