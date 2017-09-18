@@ -13,5 +13,20 @@
             "git-module": "flatpak-kde-runtime.git",
             "git-branch": "master"
         }
+    },
+    "imports": {
+        "gnome": [
+            "org.freedesktop.Sdk//1.6",
+            "org.freedesktop.Platform//1.6",
+            "org.freedesktop.Platform.GL//1.4",
+            "org.freedesktop.Platform.GL32//1.4",
+            "org.gnome.Sdk//3.24",
+            "org.gnome.Platform//3.24",
+            "org.gnome.Sdk//3.26",
+            "org.gnome.Platform//3.26"
+        ],
+        "gnome-apps": [
+            "org.freedesktop.GlxInfo//1.6"
+        ]
     }
 }

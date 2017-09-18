@@ -51,5 +51,7 @@
         "org.app.special-module": {
             "git-module": "special-module.git"
         }
+    },
+    "imports": {
     }
 }

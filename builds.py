@@ -8,6 +8,7 @@ import utils
 
 repos = {}
 builds = {}
+imports = {}
 default_repo = None
 by_base_uri = {}
 
@@ -52,7 +53,7 @@ class BuildData:
         return "%s %s %s %s %s" % (self.id, self.fp_branch, self.url, self.git_branch, "official" if self.official else "test")
 
 def load_config(filename):
-    global repos, builds, default_repo, by_base_uri
+    global repos, builds, imports, default_repo, by_base_uri
     f = open(filename, 'r')
     config = utils.json_to_ascii(json.loads(f.read ()))
     for k in config["repos"]:
@@ -63,6 +64,7 @@ def load_config(filename):
     for n in repos:
         r = repos[n]
         by_base_uri[r.base] = r
+    imports = config["imports"]
 
 def lookup_by_name(buildname):
     split = buildname.split("/", 1)
