@@ -34,10 +34,9 @@ for REF in ${!MIRROR_REFS[@]}; do
     OLD_COMMIT=${MIRROR_REFS[$REF]}
     NEW_COMMIT=$(ostree --repo=$REPO show $REF 2> /dev/null| grep commit)
     echo $REF: $OLD_COMMIT is now $NEW_COMMIT
-    if [[ $OLD_COMMIT != $NEW_COMMIT ]]; then
-        echo signing $REF
-        ostree gpg-sign --repo=$REPO --gpg-homedir=$GPG_HOMEDIR $REF $GPG_KEY
-    fi
+    # We always sign because the pull overwrote our signature
+    echo signing $REF
+    ostree gpg-sign --repo=$REPO --gpg-homedir=$GPG_HOMEDIR $REF $GPG_KEY
 done
 
 flatpak build-update-repo --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $REPO
