@@ -39,4 +39,4 @@ for REF in ${!MIRROR_REFS[@]}; do
     ostree gpg-sign --repo=$REPO --gpg-homedir=$GPG_HOMEDIR $REF $GPG_KEY
 done
 
-flatpak build-update-repo --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $REPO
+flatpak build-update-repo --generate-static-deltas --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $REPO
