@@ -7,6 +7,7 @@ GPG_HOMEDIR=$4
 GPG_KEY=$5
 
 #set -x
+set -e
 
 declare -A MIRROR_REFS
 
@@ -36,7 +37,7 @@ for REF in ${!MIRROR_REFS[@]}; do
     echo $REF: $OLD_COMMIT is now $NEW_COMMIT
     # We always sign because the pull overwrote our signature
     echo signing $REF
-    ostree gpg-sign --repo=$REPO --gpg-homedir=$GPG_HOMEDIR $REF $GPG_KEY
+    ostree gpg-sign --repo=$REPO --gpg-homedir=$GPG_HOMEDIR $REF $GPG_KEY || true
 done
 
 flatpak build-update-repo --generate-static-deltas --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $REPO
