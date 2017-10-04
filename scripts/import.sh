@@ -6,7 +6,7 @@ IMPORT_REFS=$3
 GPG_HOMEDIR=$4
 GPG_KEY=$5
 
-#set -x
+set -x
 set -e
 
 declare -A MIRROR_REFS
