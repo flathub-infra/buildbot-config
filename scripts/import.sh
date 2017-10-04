@@ -28,10 +28,10 @@ for REF in $REFS; do
     done
 done
 
-echo pulling ${!MIRROR_REFS[@]}
-ostree --repo=$REPO pull --mirror $REMOTE ${!MIRROR_REFS[@]}
 
 for REF in ${!MIRROR_REFS[@]}; do
+    echo pulling $REF
+    ostree --repo=$REPO pull --mirror $REMOTE $REF
     OLD_COMMIT=${MIRROR_REFS[$REF]}
     NEW_COMMIT=$(ostree --repo=$REPO show $REF 2> /dev/null| grep commit)
     echo $REF: $OLD_COMMIT is now $NEW_COMMIT
