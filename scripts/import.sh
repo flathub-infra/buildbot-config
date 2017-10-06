@@ -1,43 +1,72 @@
 #!/bin/bash
 
-REPO=$1
-REMOTE=$2
-IMPORT_REFS=$3
-GPG_HOMEDIR=$4
-GPG_KEY=$5
+COMMAND=$1
+FLATHUB_REPO=$2
+REMOTE=$3
+REMOTE_URL=$4
+REMOTE_GPGKEY=$5
+IMPORT_REFS=$6
+GPG_HOMEDIR=$7
+GPG_KEY=$8
 
-set -x
 set -e
 
-declare -A MIRROR_REFS
+# This needs to be on the same fs as the regular repo so that hardlinks work
+IMPORT_REPO=$FLATHUB_REPO/tmp/import-repo
 
-REFS=$(ostree --repo=$REPO remote refs  $REMOTE | sed s/$REMOTE://)
-for REF in $REFS; do
-    [[ ${REF} != 'runtime/'* && ${REF} != 'app/'* ]] && continue
-    IFS='/' read -ra PARTS <<< "$REF"
-    for IMPORT_REF in $IMPORT_REFS; do
-        IFS='/' read -ra IMPORT_PARTS <<< "$IMPORT_REF"
-        [[ ${PARTS[1]} != ${IMPORT_PARTS[0]}* ]] && continue
-        [[ ${PARTS[2]} != ${IMPORT_PARTS[1]}*  && ${IMPORT_PARTS[1]} != "" ]] && continue
-        [[ ${PARTS[3]} != ${IMPORT_PARTS[2]}*  && ${IMPORT_PARTS[2]} != "" ]] && continue
-        #echo Matched: $REF $IMPORT_REF
-        COMMIT=$(ostree --repo=$REPO show $REF 2> /dev/null| grep commit || true)
-        #echo COMMIT=$COMMIT
-        MIRROR_REFS[$REF]=$COMMIT
-        break
+if [ $COMMAND == 'import' ]; then
+    ostree --repo=${IMPORT_REPO} init --mode=archive-z2
+
+    curl ${REMOTE_GPGKEY} -o gpg.key
+    ostree --repo=${IMPORT_REPO} remote add --if-not-exists --gpg-import=gpg.key ${REMOTE} ${REMOTE_URL}
+
+    echo "Calculating refs to mirror"
+    MIRROR_REFS=
+    REFS=$(ostree --repo=$FLATHUB_REPO remote refs  $REMOTE | sed s/$REMOTE://)
+    for REF in $REFS; do
+        [[ ${REF} != 'runtime/'* && ${REF} != 'app/'* ]] && continue
+        IFS='/' read -ra PARTS <<< "$REF"
+        # We match all subrefs too:
+        for IMPORT_REF in $IMPORT_REFS; do
+            IFS='/' read -ra IMPORT_PARTS <<< "$IMPORT_REF"
+            [[ ${PARTS[1]} != ${IMPORT_PARTS[0]}* ]] && continue
+            [[ ${PARTS[2]} != ${IMPORT_PARTS[1]}*  && ${IMPORT_PARTS[1]} != "" ]] && continue
+            [[ ${PARTS[3]} != ${IMPORT_PARTS[2]}*  && ${IMPORT_PARTS[2]} != "" ]] && continue
+            MIRROR_REFS="${MIRROR_REFS} $REF"
+            break
+        done
     done
-done
 
+    # Import the current refs so that we don't have to download them
+    # This will just be a bunch of hardlinks, so its quick and cheap
+    for R in ${MIRROR_REFS}; do
+        # Don't fail if the ref doesn't exist locally already
+        ostree --repo=${IMPORT_REPO} pull-local --disable-fsync $FLATHUB_REPO ${R} || true
+    done
 
-for REF in ${!MIRROR_REFS[@]}; do
-    echo pulling $REF
-    ostree --repo=$REPO pull --mirror $REMOTE $REF
-    OLD_COMMIT=${MIRROR_REFS[$REF]}
-    NEW_COMMIT=$(ostree --repo=$REPO show $REF 2> /dev/null| grep commit)
-    echo $REF: $OLD_COMMIT is now $NEW_COMMIT
-    # We always sign because the pull overwrote our signature
-    echo signing $REF
-    ostree gpg-sign --repo=$REPO --gpg-homedir=$GPG_HOMEDIR $REF $GPG_KEY || true
-done
+    echo "Mirroring refs from $REMOTE"
+    # We pull one at a time, because there is a max limit of fetchs (_OSTREE_MAX_OUTSTANDING_FETCHER_REQUESTS)
+    for R in ${MIRROR_REFS}; do
+        echo "Mirroring $R"
+        ostree --repo=${IMPORT_REPO} pull --disable-fsync --mirror $REMOTE ${R}
+    done
 
-flatpak build-update-repo --generate-static-deltas --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $REPO
+    echo "${MIRROR_REFS}" > refs-to-merge
+fi
+
+if [ $COMMAND == 'merge' ]; then
+    echo "Merging mirrored refs"
+
+    MIRROR_REFS=`cat refs-to-merge`
+
+    set -x
+
+    flatpak build-commit-from -v --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY \
+            --src-repo=${IMPORT_REPO} --no-update-summary $FLATHUB_REPO ${MIRROR_REFS}
+
+    flatpak build-update-repo --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $FLATHUB_REPO
+    flatpak build-update-repo --generate-static-deltas --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $FLATHUB_REPO
+
+    # Only remove this on success, so that on failures we don't have to re-pull *everything*
+    rm -rf ${IMPORT_REPO}
+fi

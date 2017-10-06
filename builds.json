@@ -15,18 +15,27 @@
         }
     },
     "imports": {
-        "gnome": [
-            "org.freedesktop.Sdk//1.6",
-            "org.freedesktop.Platform//1.6",
-            "org.freedesktop.Platform.GL//1.4",
-            "org.freedesktop.Platform.GL32//1.4",
-            "org.gnome.Sdk//3.24",
-            "org.gnome.Platform//3.24",
-            "org.gnome.Sdk//3.26",
-            "org.gnome.Platform//3.26"
-        ],
-        "gnome-apps": [
-            "org.freedesktop.GlxInfo//1.6"
-        ]
+        "gnome": {
+            "repo": "https://sdk.gnome.org/repo",
+            "key": "https://sdk.gnome.org/keys/gnome-sdk.gpg",
+            "refs": [
+                "org.freedesktop.Sdk//1.6",
+                "org.freedesktop.Platform//1.6",
+                "org.freedesktop.Platform.GL//1.4",
+                "org.freedesktop.Platform.GL32//1.4",
+                "org.gnome.Sdk//3.24",
+                "org.gnome.Platform//3.24",
+                "org.gnome.Sdk//3.26",
+                "org.gnome.Platform//3.26"
+            ]
+        },
+        "gnome-apps": {
+            "repo": "https://sdk.gnome.org/repo-app",
+            "key": "https://sdk.gnome.org/keys/gnome-sdk.gpg",
+            "repo": "https://sdk.gnome.org/gnome-apps.flatpakrepo",
+            "refs": [
+                "org.freedesktop.GlxInfo//1.6"
+            ]
+        }
     }
 }
