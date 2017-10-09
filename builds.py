@@ -26,6 +26,7 @@ class BuildDataInfo:
         self.git_module = json.get("git-module", None)
         self.git_branch = json.get("git-branch", None)
         self.only_arches = json.get("only-arches", None)
+        self.custom_buildcmd = json.get("custom-buildcmd", False)
 
     def get_git_branch(self):
         if self.git_branch:
@@ -46,6 +47,7 @@ class BuildData:
         self.url = None
         self.git_branch = None
         self.official = False
+        self.custom_buildcmd = False
         self.only_arches = None
 
     def get_manifest(self):
@@ -75,6 +77,7 @@ def lookup_by_name(buildname):
     if len(split) > 1:
         fp_branch = split[1]
 
+    custom_buildcmd = False
     only_arches = None
 
     if builds.has_key(buildname):
@@ -82,6 +85,7 @@ def lookup_by_name(buildname):
         repo = info.repo
         module = info.get_git_module()
         git_branch = info.get_git_branch()
+        custom_buildcmd = info.custom_buildcmd
         only_arches = info.only_arches
     else: # No build, create default
         if fp_branch != None or id_used_in_buildname(id):
@@ -96,6 +100,7 @@ def lookup_by_name(buildname):
     d.url = "%s/%s" % (repo.base, module)
     d.git_branch = git_branch
     d.official = True
+    d.custom_buildcmd = custom_buildcmd
     d.only_arches = only_arches
     return d
 
