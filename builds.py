@@ -25,6 +25,7 @@ class BuildDataInfo:
         self.repo = repos[self.reponame]
         self.git_module = json.get("git-module", None)
         self.git_branch = json.get("git-branch", None)
+        self.only_arches = json.get("only-arches", None)
 
     def get_git_branch(self):
         if self.git_branch:
@@ -45,6 +46,7 @@ class BuildData:
         self.url = None
         self.git_branch = None
         self.official = False
+        self.only_arches = None
 
     def get_manifest(self):
         return "%s.json" % self.id
@@ -73,11 +75,14 @@ def lookup_by_name(buildname):
     if len(split) > 1:
         fp_branch = split[1]
 
+    only_arches = None
+
     if builds.has_key(buildname):
         info = builds[buildname]
         repo = info.repo
         module = info.get_git_module()
         git_branch = info.get_git_branch()
+        only_arches = info.only_arches
     else: # No build, create default
         if fp_branch != None or id_used_in_buildname(id):
            raise Exception("No defined build %s" % buildname)
@@ -91,6 +96,7 @@ def lookup_by_name(buildname):
     d.url = "%s/%s" % (repo.base, module)
     d.git_branch = git_branch
     d.official = True
+    d.only_arches = only_arches
     return d
 
 def id_is_valid(possible_id):
