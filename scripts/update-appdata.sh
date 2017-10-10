@@ -12,6 +12,7 @@ for app in $(ostree refs --repo=$REPO app | grep /stable | sed s@/.*@@ | sort -u
 [Flatpak Ref]
 Name=$app
 Branch=stable
+Title=$app from flathub
 Url=https://flathub.org/repo/
 RuntimeRepo=http://flathub.org/repo/flathub.flatpakrepo
 IsRuntime=false
