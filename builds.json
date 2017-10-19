@@ -5,6 +5,9 @@
         },
         "kde": {
             "base": "https://github.com/KDE"
+        },
+        "alex": {
+            "base": "https://github.com/alexlarsson"
         }
     },
     "builds": {
@@ -12,6 +15,11 @@
             "repo": "kde",
             "git-module": "flatpak-kde-runtime.git",
             "git-branch": "master"
+        },
+        "org.freedesktop.Platform.GL.nvidia": {
+            "repo": "alex",
+            "only-arches": ["x86_64","i386"],
+            "custom-buildcmd": true
         }
     },
     "imports": {

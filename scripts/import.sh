@@ -48,7 +48,11 @@ if [ $COMMAND == 'import' ]; then
     # We pull one at a time, because there is a max limit of fetchs (_OSTREE_MAX_OUTSTANDING_FETCHER_REQUESTS)
     for R in ${MIRROR_REFS}; do
         echo "Mirroring $R"
-        ostree --repo=${IMPORT_REPO} pull --disable-fsync --mirror $REMOTE ${R}
+        # We retry this 5 times, because we keep getting weird timeouts
+        for i in $(seq 1 5); do
+            ostree --repo=${IMPORT_REPO} pull --disable-fsync --mirror $REMOTE ${R} && res=0 && break || res=$?;
+        done;
+        (exit $res)
     done
 
     echo "${MIRROR_REFS}" > refs-to-merge
