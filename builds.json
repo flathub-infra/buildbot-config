@@ -16,6 +16,11 @@
             "git-module": "flatpak-kde-runtime.git",
             "git-branch": "qt5.9lts"
         },
+        "org.kde.Sdk/5.10": {
+            "repo": "kde",
+            "git-module": "flatpak-kde-runtime.git",
+            "git-branch": "master"
+        },
         "org.freedesktop.Platform.GL.nvidia": {
             "repo": "alex",
             "only-arches": ["x86_64","i386"],
