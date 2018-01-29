@@ -11,7 +11,7 @@ for i in ../../build-*; do
          echo Scanning `basename $i`
          ls -lat
          du -c --max-depth=1 | sort -n
-         find -maxdepth 1 -type d -mtime +90 -print0 | xargs rm -rfv
+         find -maxdepth 1 -type d -mtime +90 -print0 | xargs -0t rm -rf
          popd
     fi
 done
