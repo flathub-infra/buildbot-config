@@ -9,8 +9,12 @@ for i in ../../build-*; do
     if test -d $i; then
          pushd $i
          echo Scanning `basename $i`
-         find . -maxdepth 1 -type d -printf '%t %p\n'
-         du -csh *
+         ls -lat
+         du -c --max-depth=1 | sort -n
+         find -maxdepth 1 -type d -mtime +90 -print0 | xargs rm -rf
          popd
     fi
 done
+
+echo Free space on build disk:
+df -h .
