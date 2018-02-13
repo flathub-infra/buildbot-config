@@ -11,6 +11,13 @@ builds = {}
 imports = {}
 default_repo = None
 by_base_uri = {}
+reverse_deps = {}
+
+def reverse_dependency_lookup(buildname):
+    res = []
+    for id in reverse_deps.get(buildname, []):
+        res.append(lookup_by_name(id))
+    return res
 
 class BuildDataRepo:
     def __init__(self, name, json):
@@ -27,6 +34,12 @@ class BuildDataInfo:
         self.git_branch = json.get("git-branch", None)
         self.only_arches = json.get("only-arches", None)
         self.custom_buildcmd = json.get("custom-buildcmd", False)
+        self.base = json.get("base", None)
+
+        if self.base:
+            l = reverse_deps.get(self.base, [])
+            l.append(buildname)
+            reverse_deps[self.base] = l
 
     def get_git_branch(self):
         if self.git_branch:
