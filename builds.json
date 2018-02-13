@@ -6,6 +6,9 @@
         "kde": {
             "base": "https://github.com/KDE"
         },
+        "flatpak": {
+            "base": "https://github.com/flatpak"
+        },
         "alex": {
             "base": "https://github.com/alexlarsson"
         }
@@ -22,7 +25,9 @@
             "git-branch": "master"
         },
         "org.freedesktop.Platform.GL.nvidia": {
-            "repo": "alex",
+            "repo": "flatpak",
+            "git-module": "freedesktop-sdk-images.git",
+            "git-branch": "nvidia-drivers",
             "only-arches": ["x86_64","i386"],
             "custom-buildcmd": true
         }
@@ -34,8 +39,6 @@
             "refs": [
                 "org.freedesktop.Sdk//1.6",
                 "org.freedesktop.Platform//1.6",
-                "org.freedesktop.Platform.GL//1.4",
-                "org.freedesktop.Platform.GL32//1.4",
                 "org.gnome.Sdk//3.24",
                 "org.gnome.Platform//3.24",
                 "org.gnome.Sdk//3.26",
