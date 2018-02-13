@@ -161,7 +161,7 @@ def lookup_by_git(git_url, git_branch, optional_id=None):
     if repo:
         # Maybe it exactly matches a specified build name (and id if specified)
         exact_match = find_build_by_repo_module_branch(repo, git_module, git_branch)
-        if exact_match and (not optional_id or optional_id == exact_match.id):
+        if exact_match and (not optional_id or optional_id == build_name_to_id(exact_match)):
             return lookup_by_name(exact_match)
 
         # It could be a default build name from the git module if:
