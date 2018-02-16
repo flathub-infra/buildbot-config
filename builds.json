@@ -30,17 +30,6 @@
             "git-branch": "nvidia-drivers",
             "only-arches": ["x86_64","i386"],
             "custom-buildcmd": true
-        },
-        "org.gnome.Recipes": {
-            "only-arches": ["x86_64"]
-        },
-        "org.gnome.ghex": {
-            "only-arches": ["x86_64"],
-            "base": "org.gnome.Recipes"
-        },
-        "org.gnome.gedit": {
-            "only-arches": ["x86_64"],
-            "base": "org.gnome.ghex"
         }
     },
     "imports": {
