@@ -6,6 +6,7 @@ shopt -s nullglob
 SOURCEDIR="$1"
 mkdir -p $SOURCEDIR/downloads
 mkdir -p $SOURCEDIR/git
+mkdir -p $SOURCEDIR/bzr
 
 if test -d .flatpak-builder/downloads/; then
     cp -rnv .flatpak-builder/downloads $SOURCEDIR
