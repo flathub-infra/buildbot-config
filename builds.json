@@ -44,7 +44,9 @@
                 "org.gnome.Sdk//3.24",
                 "org.gnome.Platform//3.24",
                 "org.gnome.Sdk//3.26",
-                "org.gnome.Platform//3.26"
+                "org.gnome.Platform//3.26",
+                "org.gnome.Sdk//3.28",
+                "org.gnome.Platform//3.28"
             ]
         },
         "gnome-apps": {
