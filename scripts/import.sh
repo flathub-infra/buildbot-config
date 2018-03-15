@@ -13,12 +13,11 @@ set -e
 
 # This needs to be on the same fs as the regular repo so that hardlinks work
 IMPORT_REPO=$FLATHUB_REPO/tmp/import-repo
+PULL_REPO=pull-repo
 
 if [ $COMMAND == 'import' ]; then
-    ostree --repo=${IMPORT_REPO} init --mode=archive-z2
-
     curl ${REMOTE_GPGKEY} -o gpg.key
-    ostree --repo=${IMPORT_REPO} remote add --if-not-exists --gpg-import=gpg.key ${REMOTE} ${REMOTE_URL}
+    ostree --repo=${FLATHUB_REPO} remote add --if-not-exists --gpg-import=gpg.key ${REMOTE} ${REMOTE_URL}
 
     echo "Calculating refs to mirror"
     MIRROR_REFS=
@@ -37,12 +36,11 @@ if [ $COMMAND == 'import' ]; then
         done
     done
 
-    # Import the current refs so that we don't have to download them
-    # This will just be a bunch of hardlinks, so its quick and cheap
-    for R in ${MIRROR_REFS}; do
-        # Don't fail if the ref doesn't exist locally already
-        ostree --repo=${IMPORT_REPO} pull-local --disable-fsync $FLATHUB_REPO ${R} || true
-    done
+    set -x
+
+    rm -rf ${PULL_REPO}
+    ostree --repo=${PULL_REPO} init --mode=bare-user
+    ostree --repo=${PULL_REPO} remote add --if-not-exists --gpg-import=gpg.key ${REMOTE} ${REMOTE_URL}
 
     echo "Mirroring refs from $REMOTE"
     # We pull one at a time, because there is a max limit of fetchs (_OSTREE_MAX_OUTSTANDING_FETCHER_REQUESTS)
@@ -50,10 +48,34 @@ if [ $COMMAND == 'import' ]; then
         echo "Mirroring $R"
         # We retry this 5 times, because we keep getting weird timeouts
         for i in $(seq 1 5); do
-            ostree --repo=${IMPORT_REPO} pull --disable-fsync --mirror $REMOTE ${R} && res=0 && break || res=$?;
+            ostree --repo=${PULL_REPO} pull --disable-fsync --mirror $REMOTE ${R} && res=0 && break || res=$?;
         done;
         (exit $res)
     done
+
+    # Rebase pulled refs on previous flathub revision
+    echo "Rebasing on flathub revisions"
+
+    rm -rf ${IMPORT_REPO}
+    ostree --repo=${IMPORT_REPO} init --mode=archive-z2
+    ostree --repo=${IMPORT_REPO} remote add --if-not-exists --gpg-import=gpg.key ${REMOTE} ${REMOTE_URL}
+
+    # First we import the current version
+    # This will just be a bunch of hardlinks, so its quick and cheap
+    for R in ${MIRROR_REFS}; do
+        # Don't fail if the ref doesn't exist locally already
+        ostree --repo=${IMPORT_REPO} pull-local --disable-fsync $FLATHUB_REPO ${R} || true
+    done
+
+    # Then we add the rebase the new commits on top of that
+    flatpak build-commit-from -v --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY \
+            --src-repo=${PULL_REPO} --no-update-summary $IMPORT_REPO ${MIRROR_REFS}
+
+    rm -rf ${PULL_REPO}
+
+    # We generate deltas in the import repo here, so it happens outside the repo lock
+    echo "Generating deltas"
+    flatpak build-update-repo --generate-static-deltas --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $IMPORT_REPO
 
     echo "${MIRROR_REFS}" > refs-to-merge
 fi
@@ -71,6 +93,5 @@ if [ $COMMAND == 'merge' ]; then
     flatpak build-update-repo --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $FLATHUB_REPO
     flatpak build-update-repo --generate-static-deltas --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $FLATHUB_REPO
 
-    # Only remove this on success, so that on failures we don't have to re-pull *everything*
     rm -rf ${IMPORT_REPO}
 fi
