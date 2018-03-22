@@ -96,7 +96,7 @@ class Builds:
         res = []
         for id in self.reverse_deps.get(buildname, []):
             res.append(self.lookup_by_name(id))
-            return res
+        return res
 
     def lookup_by_name(self, buildname):
         split = buildname.split("/", 1)
