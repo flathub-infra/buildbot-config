@@ -67,7 +67,7 @@
         "org.gnome.Sdk/3.28": {
             "repo": "gnome",
             "git-module": "gnome-sdk-images.git",
-            "git-branch": "gnome-3-26",
+            "git-branch": "gnome-3-28",
             "base": "org.freedesktop.Sdk/1.6",
             "custom-buildcmd": true
         }
