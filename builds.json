@@ -43,13 +43,6 @@
             "git-branch": "1.6",
             "custom-buildcmd": true
         },
-        "org.gnome.Sdk/master": {
-            "repo": "gnome",
-            "git-module": "gnome-sdk-images.git",
-            "git-branch": "master",
-            "base": "org.freedesktop.Sdk/1.6",
-            "custom-buildcmd": true
-        },
         "org.gnome.Sdk/3.24": {
             "repo": "gnome",
             "git-module": "gnome-sdk-images.git",
