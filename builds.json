@@ -10,7 +10,8 @@
             "base": "https://github.com/flatpak"
         },
         "gnome": {
-            "base": "git@gitlab.gnome.org:GNOME"
+            "base": "https://gitlab.gnome.org/GNOME",
+            "alternatives": [ "git@gitlab.gnome.org:GNOME" ]
         },
         "alex": {
             "base": "https://github.com/alexlarsson"
@@ -40,6 +41,13 @@
             "repo": "flatpak",
             "git-module": "freedesktop-sdk-images.git",
             "git-branch": "1.6",
+            "custom-buildcmd": true
+        },
+        "org.gnome.Sdk/master": {
+            "repo": "gnome",
+            "git-module": "gnome-sdk-images.git",
+            "git-branch": "master",
+            "base": "org.freedesktop.Sdk/1.6",
             "custom-buildcmd": true
         },
         "org.gnome.Sdk/3.24": {

@@ -25,6 +25,7 @@ class BuildDataRepo:
         self.name = name
         self.base = json["base"]
         self.default_branch = json.get("default-branch", "master")
+        self.alternatives = json.get("alternatives", [])
 
 class BuildDataInfo:
     def __init__(self, buildname, json, repos):
@@ -73,11 +74,15 @@ class Builds:
         self.default_repo = None
         self.by_base_uri = {}
         self.reverse_deps = {}
+        self.reverse_repo_base = {}
 
         f = open(filename, 'r')
         config = utils.json_to_ascii(json.loads(f.read ()))
         for k in config["repos"]:
-            self.repos[k] = BuildDataRepo(k, config["repos"][k])
+            r = BuildDataRepo(k, config["repos"][k])
+            self.repos[k] = r
+            for alt_base in r.alternatives:
+                self.reverse_repo_base[alt_base] = r.base
         for k in config["builds"]:
             i = BuildDataInfo(k, config["builds"][k], self.repos)
             self.builds[k] = i
@@ -91,6 +96,14 @@ class Builds:
             r = self.repos[n]
             self.by_base_uri[r.base] = r
         self.imports = config["imports"]
+
+    def get_alternative_repo_url(self, alt_url):
+        s = alt_url.rsplit('/', 1);
+        base = s[0]
+        git_module = s[1]
+        if base in self.reverse_repo_base:
+            return self.reverse_repo_base[base] + "/" + git_module
+        return None
 
     def reverse_dependency_lookup(self, buildname):
         res = []
