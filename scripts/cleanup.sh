@@ -5,6 +5,7 @@ set -e
 echo Free space on build disk:
 df -h .
 
+du -csh ../../*
 for i in ../../build-*; do
     if test -d $i; then
          pushd $i
@@ -12,7 +13,7 @@ for i in ../../build-*; do
          ls -lat
          du -c --max-depth=1 | sort -n
          umount -v */.flatpak-builder/rofiles/rofiles-* || true
-         find -maxdepth 1 -type d -mtime +2 -print0 | xargs -0t rm -rf
+         find -mindepth 1 -maxdepth 1 -type d -mtime +2 -print0 | xargs -0t rm -rf
          popd
     fi
 done
