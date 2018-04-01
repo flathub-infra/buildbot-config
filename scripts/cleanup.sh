@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -e
 shopt -s nullglob
 
 echo Free space on build disk:
