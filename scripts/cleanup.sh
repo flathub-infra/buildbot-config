@@ -10,7 +10,7 @@ for i in ../../build-*; do
     if test -d $i; then
          pushd $i
          echo Scanning `basename $i`
-         du -chs *
+         du -ha -d2
          for i in */.flatpak-builder/rofiles/rofiles-*; do
              fusermount -u -z $i || true
          done
