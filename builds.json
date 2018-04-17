@@ -32,37 +32,31 @@
         },
         "org.kde.KStyle.Adwaita/5.9": {
             "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-runtime.git",
             "git-branch": "qt5.9lts"
         },
         "org.kde.KStyle.Adwaita/5.10": {
             "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-applications.git",
             "git-branch": "master"
         },
         "org.kde.KStyle.HighContrast/5.9": {
             "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-runtime.git",
             "git-branch": "qt5.9lts"
         },
         "org.kde.KStyle.HighContrast/5.10": {
             "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-applications.git",
             "git-branch": "master"
         },
         "org.kde.PlatformTheme.QGnomePlatform/5.9": {
             "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-runtime.git",
             "git-branch": "qt5.9lts"
         },
         "org.kde.PlatformTheme.QGnomePlatform/5.10": {
             "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-applications.git",
             "git-branch": "master"
         },
