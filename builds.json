@@ -37,7 +37,7 @@
         },
         "org.kde.KStyle.Adwaita/5.10": {
             "repo": "kde",
-            "git-module": "flatpak-kde-applications.git",
+            "git-module": "flatpak-kde-runtime.git",
             "git-branch": "master"
         },
         "org.kde.KStyle.HighContrast/5.9": {
@@ -47,7 +47,7 @@
         },
         "org.kde.KStyle.HighContrast/5.10": {
             "repo": "kde",
-            "git-module": "flatpak-kde-applications.git",
+            "git-module": "flatpak-kde-runtime.git",
             "git-branch": "master"
         },
         "org.kde.PlatformTheme.QGnomePlatform/5.9": {
@@ -57,7 +57,7 @@
         },
         "org.kde.PlatformTheme.QGnomePlatform/5.10": {
             "repo": "kde",
-            "git-module": "flatpak-kde-applications.git",
+            "git-module": "flatpak-kde-runtime.git",
             "git-branch": "master"
         },
         "org.freedesktop.Platform.GL.nvidia": {
