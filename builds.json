@@ -30,6 +30,36 @@
             "git-module": "flatpak-kde-runtime.git",
             "git-branch": "master"
         },
+        "org.kde.KStyle.Adwaita/5.9": {
+            "repo": "default",
+            "git-module": "org.kde.KStyle.Adwaita.git",
+            "git-branch": "qt5.9lts"
+        },
+        "org.kde.KStyle.Adwaita/5.10": {
+            "repo": "default",
+            "git-module": "org.kde.KStyle.Adwaita.git",
+            "git-branch": "master"
+        },
+        "org.kde.KStyle.HighContrast/5.9": {
+            "repo": "default",
+            "git-module": "org.kde.KStyle.HighContrast.git",
+            "git-branch": "qt5.9lts"
+        },
+        "org.kde.KStyle.HighContrast/5.10": {
+            "repo": "default",
+            "git-module": "org.kde.KStyle.HighContrast.git",
+            "git-branch": "master"
+        },
+        "org.kde.PlatformTheme.QGnomePlatform/5.9": {
+            "repo": "default",
+            "git-module": "org.kde.PlatformTheme.QGnomePlatform.git",
+            "git-branch": "qt5.9lts"
+        },
+        "org.kde.PlatformTheme.QGnomePlatform/5.10": {
+            "repo": "default",
+            "git-module": "org.kde.PlatformTheme.QGnomePlatform.git",
+            "git-branch": "master"
+        },
         "org.freedesktop.Platform.GL.nvidia": {
             "repo": "flatpak",
             "git-module": "freedesktop-sdk-images.git",
