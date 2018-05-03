@@ -60,8 +60,14 @@ class BuildData:
         self.custom_buildcmd = False
         self.only_arches = None
 
-    def get_manifest(self):
+    def get_json_manifest(self):
         return "%s.json" % self.id
+
+    def get_yaml_manifest(self):
+        return "%s.yaml" % self.id
+
+    def get_yml_manifest(self):
+        return "%s.yml" % self.id
 
     def __str__(self):
         return "%s %s %s %s %s" % (self.id, self.fp_branch, self.url, self.git_branch, "official" if self.official else "test")
