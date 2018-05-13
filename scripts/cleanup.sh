@@ -14,7 +14,7 @@ for i in ../../build-*; do
          for i in */.flatpak-builder/rofiles/rofiles-*; do
              fusermount -u -z $i || true
          done
-         find -mindepth 1 -maxdepth 1 -type d -mtime +2 -print0 | xargs -0t rm -rf
+         find -mindepth 1 -maxdepth 1 -type d -print0 | xargs -0t rm -rf
          popd
     fi
 done
