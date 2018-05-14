@@ -5,6 +5,9 @@ shopt -s nullglob
 echo Free space on build disk:
 df -h .
 
+rm -frv ~/.cache/flatpak
+rm -frv ~/.local/share/flatpak/repo/tmp/cache
+
 du -csh ../../*
 for i in ../../build-*; do
     if test -d $i; then
