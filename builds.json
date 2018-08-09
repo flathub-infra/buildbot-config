@@ -117,6 +117,14 @@
         }
     },
     "imports": {
+        "fdo": {
+            "repo": "https://cache.sdk.freedesktop.org/releases/",
+            "key": "https://people.gnome.org/~alexl/freedesktop-sdk.gpg",
+            "refs": [
+                "org.freedesktop.Sdk//18.08",
+                "org.freedesktop.Platform//18.08"
+            ]
+        },
         "gnome": {
             "repo": "https://sdk.gnome.org/repo",
             "key": "https://sdk.gnome.org/keys/gnome-sdk.gpg",

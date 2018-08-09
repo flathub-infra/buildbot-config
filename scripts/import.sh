@@ -36,13 +36,11 @@ if [ $COMMAND == 'import' ]; then
         done
     done
 
-    set -x
-
     rm -rf ${PULL_REPO}
     ostree --repo=${PULL_REPO} init --mode=bare-user
     ostree --repo=${PULL_REPO} remote add --if-not-exists --gpg-import=gpg.key ${REMOTE} ${REMOTE_URL}
 
-    echo "Mirroring refs from $REMOTE"
+    echo "Mirroring refs from $REMOTE; ${MIRROR_REFS}"
     # We pull one at a time, because there is a max limit of fetchs (_OSTREE_MAX_OUTSTANDING_FETCHER_REQUESTS)
     for R in ${MIRROR_REFS}; do
         echo "Mirroring $R"
