@@ -3,6 +3,8 @@ set -e
 
 REPO=$1
 
+# Uppdate appdata:
+
 mkdir -p $REPO/appstream
 
 for app in $(ostree refs --repo=$REPO app | grep /stable | sed s@/.*@@ | sort -u); do
@@ -26,4 +28,3 @@ for arch in $(ostree --repo=$REPO refs appstream); do
     echo Updating appstream for $arch
     ostree --repo=$REPO checkout -U --union appstream/$arch $REPO/appstream/$arch;
 done
-
