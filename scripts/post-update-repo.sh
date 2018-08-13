@@ -29,6 +29,4 @@ for arch in $(ostree --repo=$REPO refs appstream); do
     ostree --repo=$REPO checkout -U --union appstream/$arch $REPO/appstream/$arch;
 done
 
-for host in front-hex front-sov dl; do
-    curl --connect-to dl.flathub.org::${host}.flathub.org: -X PURGE https://dl.flathub.org/repo/summary{,.sig} || true
-done
+curl --connect-to dl.flathub.org::dl.flathub.org: -X PURGE https://dl.flathub.org/repo/summary{,.sig} || true
