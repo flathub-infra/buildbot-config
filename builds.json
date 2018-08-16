@@ -124,6 +124,16 @@
             "repo": "default",
             "git-module": "io.atom.electron.BaseApp.git",
             "git-branch": "1.6"
+        },
+        "org.electronjs.Electron2.BaseApp/18.08": {
+            "repo": "default",
+            "git-module": "org.electronjs.Electron2.BaseApp.git",
+            "git-branch": "master"
+        },
+        "io.atom.electron.BaseApp/18.08": {
+            "repo": "default",
+            "git-module": "io.atom.electron.BaseApp.git",
+            "git-branch": "master"
         }
     },
     "imports": {
