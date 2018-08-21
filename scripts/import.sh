@@ -66,7 +66,7 @@ if [ $COMMAND == 'import' ]; then
     done
 
     # Then we add the rebase the new commits on top of that
-    flatpak build-commit-from -v --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY \
+    flatpak build-commit-from -v --disable-fsync --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY \
             --src-repo=${PULL_REPO} --no-update-summary $IMPORT_REPO ${MIRROR_REFS}
 
     rm -rf ${PULL_REPO}
