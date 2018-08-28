@@ -134,6 +134,16 @@
             "repo": "default",
             "git-module": "io.atom.electron.BaseApp.git",
             "git-branch": "master"
+        },
+        "io.qt.qtwebkit.BaseApp/5.9": {
+            "repo": "default",
+            "git-module": "io.qt.qtwebkit.BaseApp.git",
+            "git-branch": "5.9"
+        },
+        "io.qt.qtwebkit.BaseApp/5.11": {
+            "repo": "default",
+            "git-module": "io.qt.qtwebkit.BaseApp.git",
+            "git-branch": "5.11"
         }
     },
     "imports": {
