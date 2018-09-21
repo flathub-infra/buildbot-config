@@ -88,7 +88,7 @@
             "only-arches": ["x86_64","i386"],
             "custom-buildcmd": true
         },
-        "org.freedesktop.SdkBase/1.6": {
+        "org.freedesktop.BaseSdk/1.6": {
             "repo": "flatpak",
             "git-module": "freedesktop-sdk-base.git",
             "git-branch": "1.6",
@@ -98,7 +98,7 @@
             "repo": "flatpak",
             "git-module": "freedesktop-sdk-images.git",
             "git-branch": "1.6",
-            "base": "org.freedesktop.SdkBase/1.6",
+            "base": "org.freedesktop.BaseSdk/1.6",
             "custom-buildcmd": true
         },
         "org.gnome.Sdk/3.24": {
