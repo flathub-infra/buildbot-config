@@ -166,8 +166,6 @@
             "repo": "https://sdk.gnome.org/repo",
             "key": "https://sdk.gnome.org/keys/gnome-sdk.gpg",
             "refs": [
-                "org.freedesktop.BaseSdk//1.6",
-                "org.freedesktop.BasePlatform//1.6"
             ]
         },
         "gnome-apps": {
