@@ -163,9 +163,11 @@
             ]
         },
         "gnome": {
-            "repo": "https://sdk.gnome.org/repo",
-            "key": "https://sdk.gnome.org/keys/gnome-sdk.gpg",
+            "repo": "https://gbm.gnome.org/import/repo",
+            "key": "https://gbm.gnome.org/keys/import.gpg",
             "refs": [
+                "org.gnome.Sdk//3.30",
+                "org.gnome.Platform//3.30"
             ]
         },
         "gnome-apps": {
