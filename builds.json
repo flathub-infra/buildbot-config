@@ -161,6 +161,11 @@
             "repo": "default",
             "git-module": "org.freedesktop.Sdk.Extension.golang.git",
             "git-branch": "18.08"
+        },
+        "io.liri.BaseApp/5.11": {
+            "repo": "default",
+            "git-module": "io.liri.BaseApp.git",
+            "git-branch": "5.11"
         }
     },
     "imports": {
