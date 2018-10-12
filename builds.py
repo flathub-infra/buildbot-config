@@ -135,11 +135,14 @@ class Builds:
             custom_buildcmd = info.custom_buildcmd
             only_arches = info.only_arches
         else: # No build, create default
-            if fp_branch != None or self.id_used_in_buildname(id):
+            if self.id_used_in_buildname(id):
                 raise Exception("No defined build %s" % buildname)
             repo = self.default_repo
             module = "%s.git" % id
-            git_branch = repo.default_branch
+            if fp_branch == None:
+                git_branch = repo.default_branch
+            else:
+                git_branch = "branch/" + fp_branch;
             if not id_is_valid(id):
                 raise Exception("Invalid build name %s" % buildname)
 
@@ -199,7 +202,7 @@ class Builds:
 
             # It could be a default build name from the git module if:
             # * It matches the default repo
-            # * It matches the default branch in the default repo
+            # * It matches the default branch in the default repo, or is the form branch/$fp_branch
             # * The git module name matches the id
             # * And there is no explicit buildnames with that id as prefix (so, e.g no
             #    default "org.kde.Sdk" if a "org.kde.Sdk/5.9" is configured, we only allow
@@ -207,10 +210,15 @@ class Builds:
             default_git_branch = self.default_repo.default_branch
             if (id_is_valid(id) and
                 repo == self.default_repo and
-                git_branch == default_git_branch and
                 git_modules_equal(id, git_module) and
                 not self.id_used_in_buildname(id)):
-                return self.lookup_by_name(id)
+                name = None
+                if  git_branch == default_git_branch:
+                    name = id;
+                elif git_branch.startswith("branch/"):
+                    name = id + "/" + git_branch[7:];
+                if name != None:
+                    return self.lookup_by_name(name)
 
         # Make sure the module is a valid name
         if not id_is_valid(id):
@@ -272,6 +280,8 @@ def test_lookup_by_name():
     verify_by_name("org.app.special-repo2-branch", url="https://github.com/special2/org.app.special-repo2-branch.git", git_branch="override")
     # Regular extra-fp-branch
     verify_by_name("org.app.has-version/1.0", fp_branch="1.0", git_branch="1-0")
+    # Non-configured special branch
+    verify_by_name("org.app.regular/foobar", fp_branch="foobar", git_branch="branch/foobar")
     # Don't allow non-versioned
     verify_by_name_exception("org.app.has-version")
     # Don't allow non-specified version
@@ -335,6 +345,7 @@ def test_lookup_by_git():
     verify_by_git_test("https://random.com/foobar.git", "master", "org.app.regular3", optional_id = "org.app.regular3")
     verify_by_git_test("https://random.com/org.app.regular.git", "other-branch", "org.app.regular")
 
+
     # Weird (non-id) uris should fail if you don't specify an id
     verify_by_git_exception("https://random.com/foobar.git", "master")
     verify_by_git_exception("https://github.com/flathub/flathub.org.git", "master")
@@ -355,6 +366,9 @@ def test_lookup_by_git():
 
     # If a special branch is configured, we should match an official build
     verify_by_git_official("https://github.com/flathub/org.app.special-branch.git", "org.app.special-branch", git_branch="special-branch")
+    # Or we use a git branch named "branch/*" branches:
+    verify_by_git_official("https://github.com/flathub/org.app.regular.git", "org.app.regular", git_branch="branch/foobar", fp_branch="foobar")
+    verify_by_git_official("https://github.com/flathub/org.app.regular.git", "org.app.regular", git_branch="branch/some-other", fp_branch="some-other")
     # For other branches (including master), we shold get a test build
     verify_by_git_test("https://github.com/flathub/org.app.special-branch.git", "master", "org.app.special-branch")
 
