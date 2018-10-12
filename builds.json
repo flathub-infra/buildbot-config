@@ -152,16 +152,6 @@
             "git-module": "io.qt.qtwebkit.BaseApp.git",
             "git-branch": "5.11"
         },
-        "org.freedesktop.Sdk.Extension.golang/1.6": {
-            "repo": "default",
-            "git-module": "org.freedesktop.Sdk.Extension.golang.git",
-            "git-branch": "1.6"
-        },
-        "org.freedesktop.Sdk.Extension.golang/18.08": {
-            "repo": "default",
-            "git-module": "org.freedesktop.Sdk.Extension.golang.git",
-            "git-branch": "18.08"
-        },
         "io.liri.BaseApp/5.11": {
             "repo": "default",
             "git-module": "io.liri.BaseApp.git",
