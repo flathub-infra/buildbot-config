@@ -166,6 +166,16 @@
             "repo": "default",
             "git-module": "io.liri.BaseApp.git",
             "git-branch": "5.11"
+        },
+        "io.elementary.BaseApp/loki": {
+            "repo": "default",
+            "git-module": "io.elementary.BaseApp.git",
+            "git-branch": "branch/loki"
+        },
+        "io.elementary.BaseApp/juno": {
+            "repo": "default",
+            "git-module": "io.elementary.BaseApp.git",
+            "git-branch": "branch/juno"
         }
     },
     "imports": {
