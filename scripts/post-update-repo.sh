@@ -29,4 +29,8 @@ for arch in $(ostree --repo=$REPO refs appstream); do
     ostree --repo=$REPO checkout -U --union appstream/$arch $REPO/appstream/$arch;
 done
 
-curl -X PURGE -H "Fastly-Soft-Purge: 1" https://dl.flathub.org/repo/summary{,.sig} || true
+# purge intermediate front-* caches and then CDN
+# (Fastly-Soft-Purge is a no-op on front-*)
+for host in front-hex front-sov dl; do
+    curl -X PURGE -H "Fastly-Soft-Purge: 1" https://${host}.flathub.org/repo/summary{,.sig} || true
+done
