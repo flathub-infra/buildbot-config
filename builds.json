@@ -24,12 +24,6 @@
             "git-module": "flatpak-kde-runtime.git",
             "git-branch": "qt5.9lts"
         },
-        "org.kde.Sdk/5.10": {
-            "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
-            "git-module": "flatpak-kde-runtime.git",
-            "git-branch": "qt5.10"
-        },
         "org.kde.Sdk/5.11": {
             "repo": "kde",
             "base": "org.freedesktop.Sdk/1.6",
@@ -41,11 +35,6 @@
             "git-module": "org.kde.KStyle.Adwaita.git",
             "git-branch": "qt5.9lts"
         },
-        "org.kde.KStyle.Adwaita/5.10": {
-            "repo": "default",
-            "git-module": "org.kde.KStyle.Adwaita.git",
-            "git-branch": "qt5.10"
-        },
         "org.kde.KStyle.Adwaita/5.11": {
             "repo": "default",
             "git-module": "org.kde.KStyle.Adwaita.git",
@@ -56,11 +45,6 @@
             "git-module": "org.kde.KStyle.HighContrast.git",
             "git-branch": "qt5.9lts"
         },
-        "org.kde.KStyle.HighContrast/5.10": {
-            "repo": "default",
-            "git-module": "org.kde.KStyle.HighContrast.git",
-            "git-branch": "qt5.10"
-        },
         "org.kde.KStyle.HighContrast/5.11": {
             "repo": "default",
             "git-module": "org.kde.KStyle.HighContrast.git",
@@ -70,11 +54,6 @@
             "repo": "default",
             "git-module": "org.kde.PlatformTheme.QGnomePlatform.git",
             "git-branch": "qt5.9lts"
-        },
-        "org.kde.PlatformTheme.QGnomePlatform/5.10": {
-            "repo": "default",
-            "git-module": "org.kde.PlatformTheme.QGnomePlatform.git",
-            "git-branch": "qt5.10"
         },
         "org.kde.PlatformTheme.QGnomePlatform/5.11": {
             "repo": "default",
