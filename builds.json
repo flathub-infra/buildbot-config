@@ -22,19 +22,22 @@
             "repo": "kde",
             "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-runtime.git",
-            "git-branch": "qt5.9lts"
+            "git-branch": "qt5.9lts",
+            "extra-prefixes": [ "org.kde.Platform" ]
         },
         "org.kde.Sdk/5.10": {
             "repo": "kde",
             "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-runtime.git",
-            "git-branch": "qt5.10"
+            "git-branch": "qt5.10",
+            "extra-prefixes": [ "org.kde.Platform" ]
         },
         "org.kde.Sdk/5.11": {
             "repo": "kde",
             "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-runtime.git",
-            "git-branch": "master"
+            "git-branch": "master",
+            "extra-prefixes": [ "org.kde.Platform" ]
         },
         "org.kde.KStyle.Adwaita/5.9": {
             "repo": "default",
@@ -92,35 +95,40 @@
             "repo": "flatpak",
             "git-module": "freedesktop-sdk-base.git",
             "git-branch": "1.6",
-            "custom-buildcmd": true
+            "custom-buildcmd": true,
+            "extra-prefixes": [ "org.freedesktop.BasePlatform" ]
         },
         "org.freedesktop.Sdk/1.6": {
             "repo": "flatpak",
             "git-module": "freedesktop-sdk-images.git",
             "git-branch": "1.6",
             "base": "org.freedesktop.BaseSdk/1.6",
-            "custom-buildcmd": true
+            "custom-buildcmd": true,
+            "extra-prefixes": [ "org.freedesktop.Platform" ]
         },
         "org.gnome.Sdk/3.24": {
             "repo": "gnome",
             "git-module": "gnome-sdk-images.git",
             "git-branch": "gnome-3-24",
             "base": "org.freedesktop.Sdk/1.6",
-            "custom-buildcmd": true
+            "custom-buildcmd": true,
+            "extra-prefixes": [ "org.gnome.Platform" ]
         },
         "org.gnome.Sdk/3.26": {
             "repo": "gnome",
             "git-module": "gnome-sdk-images.git",
             "git-branch": "gnome-3-26",
             "base": "org.freedesktop.Sdk/1.6",
-            "custom-buildcmd": true
+            "custom-buildcmd": true,
+            "extra-prefixes": [ "org.gnome.Platform" ]
         },
         "org.gnome.Sdk/3.28": {
             "repo": "gnome",
             "git-module": "gnome-sdk-images.git",
             "git-branch": "gnome-3-28",
             "base": "org.freedesktop.Sdk/1.6",
-            "custom-buildcmd": true
+            "custom-buildcmd": true,
+            "extra-prefixes": [ "org.gnome.Platform" ]
         },
         "org.electronjs.Electron2.BaseApp/stable": {
             "repo": "default",

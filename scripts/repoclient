@@ -1,0 +1,470 @@
+#!/usr/bin/python3
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+import aiohttp
+import asyncio
+import gzip
+import json
+import logging
+import os
+import os
+import sys
+import traceback
+import urllib.parse
+import yarl
+
+from aiohttp.abc import AbstractStreamWriter
+from argparse import ArgumentParser
+from multidict import CIMultiDict
+from typing import (Any, Optional)
+from functools import reduce
+
+import gi
+gi.require_version('OSTree', '1.0')
+from gi.repository import GLib, Gio, OSTree
+
+UPLOAD_CHUNK_LIMIT = 2 * 1024 * 1024
+DEFAULT_LIMIT = 2 ** 16
+
+class ApiError(Exception):
+    def __init__(self, response, body):
+        self.response = response
+        self.body = body
+    def __str__(self):
+         return "API call %s to %s returned status %s: %s: %s" % (self.response.method, self.response.url, self.response.status, self.response.reason, self.body)
+
+# This is similar to the regular payload, but opens the file lazily
+class NamedFilePayload(aiohttp.payload.Payload):
+    def __init__(self,
+                 value: str,
+                 disposition: str='attachment',
+                 *args: Any,
+                 **kwargs: Any) -> None:
+        self._file = None
+        if 'filename' not in kwargs:
+            kwargs['filename'] = os.path.basename(value)
+
+        super().__init__(value, *args, **kwargs)
+
+        if self._filename is not None and disposition is not None:
+            self.set_content_disposition(disposition, filename=self._filename)
+
+        self._size = os.stat(value).st_size
+
+    async def write(self, writer: AbstractStreamWriter) -> None:
+        if self._file is None:
+            self._file = open(self._value, 'rb')
+        try:
+            chunk = self._file.read(DEFAULT_LIMIT)
+            while chunk:
+                await writer.write(chunk)
+                chunk = self._file.read(DEFAULT_LIMIT)
+        finally:
+            self._file.close()
+
+    @property
+    def size(self) -> Optional[float]:
+        return self._size
+
+
+def ostree_object_path(repo, obj):
+    repodir = repo.get_path().get_path()
+    return os.path.join(repodir, 'objects', obj[0:2], obj[2:])
+
+def ostree_get_dir_files(repo, objects, dirtree):
+    if dirtree.endswith(".dirtree"):
+        dirtree = dirtree[:-8]
+    dirtreev = repo.load_variant(OSTree.ObjectType.DIR_TREE, dirtree)[1]
+    iter = OSTree.RepoCommitTraverseIter()
+    iter.init_dirtree(repo, dirtreev, 0)
+    while True:
+        type = iter.next()
+        if type == OSTree.RepoCommitIterResult.END:
+            break
+        if type == OSTree.RepoCommitIterResult.ERROR:
+            break
+        if type == OSTree.RepoCommitIterResult.FILE:
+            d = iter.get_file()
+            objects.add(d.out_checksum + ".filez")
+        if type == OSTree.RepoCommitIterResult.DIR:
+            pass
+
+def local_needed_files(repo, metadata_objects):
+    objects = set()
+    for c in metadata_objects:
+        if c.endswith(".dirtree"):
+            ostree_get_dir_files(repo, objects, c)
+    return objects
+
+def local_needed_metadata_dirtree(repo, objects, dirtree_content, dirtree_meta):
+    objects.add(dirtree_meta + ".dirmeta")
+    dirtree_content_name = dirtree_content + ".dirtree"
+    if dirtree_content_name in objects:
+        return
+    objects.add(dirtree_content_name)
+
+    dirtreev = repo.load_variant(OSTree.ObjectType.DIR_TREE, dirtree_content)[1]
+    iter = OSTree.RepoCommitTraverseIter()
+    iter.init_dirtree(repo, dirtreev, 0)
+    while True:
+        type = iter.next()
+        if type == OSTree.RepoCommitIterResult.END:
+            break
+        if type == OSTree.RepoCommitIterResult.ERROR:
+            break
+        if type == OSTree.RepoCommitIterResult.FILE:
+            pass
+        if type == OSTree.RepoCommitIterResult.DIR:
+            d = iter.get_dir()
+            local_needed_metadata_dirtree(repo, objects, d.out_content_checksum, d.out_meta_checksum)
+
+def local_needed_metadata(repo, commits):
+    objects = set()
+    for rev in commits:
+        objects.add(rev + ".commit")
+        commitv = repo.load_variant(OSTree.ObjectType.COMMIT, rev)[1]
+        iter = OSTree.RepoCommitTraverseIter()
+        iter.init_commit(repo, commitv, 0)
+        while True:
+            type = iter.next()
+            if type == OSTree.RepoCommitIterResult.END:
+                break
+            if type == OSTree.RepoCommitIterResult.ERROR:
+                break
+            if type == OSTree.RepoCommitIterResult.FILE:
+                pass
+            if type == OSTree.RepoCommitIterResult.DIR:
+                d = iter.get_dir()
+                local_needed_metadata_dirtree(repo, objects, d.out_content_checksum, d.out_meta_checksum)
+    return objects
+
+
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+async def missing_objects(session, build_url, token, wanted):
+    missing=[]
+    for chunk in chunks(wanted, 2000):
+        wanted_json=json.dumps({'wanted': chunk}).encode('utf-8')
+        data=gzip.compress(wanted_json)
+        headers = {
+            'Authorization': 'Bearer ' + token,
+            'Content-Encoding': 'gzip',
+            'Content-Type': 'application/json'
+        }
+        async with session.get(build_url + "/missing_objects", data=data, headers=headers) as resp:
+            if resp.status != 200:
+                raise ApiError(resp, await resp.json())
+            data = await resp.json()
+            missing.extend(data["missing"])
+    return missing
+
+async def upload_files(session, build_url, token, files):
+    if len(files) == 0:
+        return
+    print("Uploading %d objects (%d bytes)" % (len(files), reduce(lambda x, y: x + y, map(lambda f: f.size, files))))
+    with aiohttp.MultipartWriter() as writer:
+        for f in files:
+            writer.append(f)
+    writer.headers['Authorization'] = 'Bearer ' + token
+    resp = await session.request("post", build_url + '/upload',
+                                 data=writer, headers=writer.headers)
+    if resp.status != 200:
+        raise ApiError(resp, await resp.json())
+
+async def upload_objects(session, repo_path, build_url, token, objects):
+    req = []
+    total_size = 0
+    for file_obj in objects:
+        named = get_object_multipart(repo_path, file_obj)
+        total_size = total_size + named.size
+        req.append(named);
+
+        if total_size > UPLOAD_CHUNK_LIMIT:
+            await upload_files(session, build_url, token, req)
+            req = []
+            total_size = 0
+
+    await upload_files(session, build_url, token, req)
+
+async def create_ref(session, build_url, token, ref, commit):
+    print("Creating ref %s with commit %s" % (ref, commit))
+    async with session.post(build_url + "/build_ref", headers={'Authorization': 'Bearer ' + args.token}, json= { "ref": ref, "commit": commit} ) as resp:
+        if resp.status != 200:
+            raise ApiError(resp, await resp.json())
+        data = await resp.json()
+        return data;
+
+async def get_build(session, build_url, token):
+    async with session.get(build_url, headers={'Authorization': 'Bearer ' + token}) as resp:
+        if resp.status != 200:
+            raise ApiError(resp, await resp.json())
+        data = await resp.json()
+        return data
+
+async def wait_for_job(session, job_url, token):
+    old_job_status  = 0
+    printed_len = 0
+    while True:
+        async with session.get(job_url, headers={'Authorization': 'Bearer ' + token}) as resp:
+            if resp.status != 200:
+                raise ApiError(resp, await resp.json())
+            job = await resp.json()
+            job_status = job['status']
+            if job_status > 0 and old_job_status == 0:
+                print("/ Job was started");
+            old_job_status = job_status
+            log = job['log']
+            if len(log) > printed_len:
+                for line in log[printed_len:].splitlines(True):
+                    print("| %s" % line, end="")
+                printed_len = len(log)
+            if job_status > 1:
+                if job_status == 2:
+                    print("\ Job completed successfully")
+                else:
+                    print("\ Job failed")
+                return job
+            await asyncio.sleep(1)
+
+async def commit_build(session, build_url, wait, token):
+    print("Commiting build %s" % (build_url))
+    async with session.post(build_url + "/commit", headers={'Authorization': 'Bearer ' + token}, json= {} ) as resp:
+        if resp.status != 200:
+            raise ApiError(resp, await resp.json())
+        job = await resp.json()
+        job_url = resp.headers['location'];
+        print("job: %s" % job)
+        if wait:
+            print("Waiting for commit job")
+            job = await wait_for_job (session, job_url, token);
+        return job
+
+async def publish_build(session, build_url, wait, token):
+    print("Publishing build %s" % (build_url))
+    async with session.post(build_url + "/publish", headers={'Authorization': 'Bearer ' + token}, json= {} ) as resp:
+        if resp.status != 200:
+            raise ApiError(resp, await resp.json())
+        job = await resp.json()
+        job_url = resp.headers['location'];
+        if wait:
+            print("Waiting for publish job")
+            job = await wait_for_job (session, job_url, token);
+        return job;
+
+async def purge_build(session, build_url, token):
+    print("Purging build %s" % (build_url))
+    async with session.post(build_url + "/purge", headers={'Authorization': 'Bearer ' + token}, json= {} ) as resp:
+        if resp.status != 200:
+            raise ApiError(resp, await resp.json())
+        return await resp.json()
+
+async def create_token(session, manager_url, token, name, subject, scope, duration):
+    token_url = yarl.URL(manager_url).with_path("/api/v1/token_subset")
+    async with session.post(token_url, headers={'Authorization': 'Bearer ' + token}, json = {
+            "name": name,
+            "sub": subject,
+            "scope": scope,
+            "duration": duration,
+    } ) as resp:
+        if resp.status != 200:
+            raise ApiError(resp, await resp.json())
+        data = await resp.json()
+        return data["token"]
+
+def get_object_multipart(repo_path, object):
+    return NamedFilePayload(repo_path + "/objects/" + object[:2] + "/" + object[2:], filename=object)
+
+async def create_command(args, session):
+    build_url = yarl.URL(args.manager_url).with_path("/api/v1/build")
+    async with session.post(build_url, headers={'Authorization': 'Bearer ' + args.token}, json={} ) as resp:
+        if resp.status != 200:
+            raise ApiError(resp, await resp.json())
+        data = await resp.json()
+        print(resp.headers['location'])
+
+
+async def push_command(args, session):
+    local_repo = OSTree.Repo.new(Gio.File.new_for_path(args.repo_path))
+    try:
+        local_repo.open(None)
+    except GLib.Error as err:
+        print("Can't open repo %s: %s" % (args.repo_path, err.message))
+        return 1
+
+    if len(args.branches) == 0:
+        _, refs = local_repo.list_refs(None, None)
+    else:
+        refs = {}
+        for branch in args.branches:
+            _, rev = local_repo.resolve_rev(branch, False)
+            refs[branch] = rev
+
+    if (args.minimal_token):
+        id = yarl.URL(args.build_url).parts[-1]
+        token = await create_token(session, args.build_url, args.token, "minimal-upload", "build/%s" % (id), ["upload"], 60*60)
+    else:
+        token = args.token
+
+    print("Uploading refs to %s: %s"% (args.build_url, list(refs)))
+
+    metadata_objects = local_needed_metadata(local_repo, refs.values())
+
+    print("Refs contain %d metadata objects" % (len(metadata_objects)))
+
+    missing_metadata_objects = await missing_objects(session, args.build_url, token, list(metadata_objects))
+
+    print("Remote missing %d of those" % (len(missing_metadata_objects)))
+
+    file_objects = local_needed_files(local_repo, missing_metadata_objects)
+    print("Has %d file objects for those" % (len(file_objects)))
+
+    missing_file_objects = await missing_objects(session, args.build_url, token, list(file_objects))
+    print("Remote missing %d of those" % (len(missing_file_objects)))
+
+    # First upload all missing file objects
+    print("Uploading file objects")
+    await upload_objects(session, args.repo_path, args.build_url, token, missing_file_objects)
+
+    # Then all the metadata
+    print("Uploading metadata objects")
+    await upload_objects(session, args.repo_path, args.build_url, token, missing_metadata_objects)
+
+    # Then the refs
+    for ref, commit in refs.items():
+        await create_ref(session, args.build_url, token, ref, commit)
+
+    # Note, this always uses the full token, as the minimal one only has upload permissions
+    if args.commit or args.publish:
+        await commit_build(session, args.build_url, args.publish or args.wait, args.token)
+
+    if args.publish:
+        await publish_build(session, args.build_url, args.wait, args.token)
+
+async def commit_command(args, session):
+    await commit_build(session, args.build_url, args.wait, args.token)
+
+async def publish_command(args, session):
+    await publish_build(session, args.build_url, args.wait, args.token)
+
+async def purge_command(args, session):
+    await purge_build(session, args.build_url, args.token)
+
+async def create_token_command(args, session):
+    new_token = await create_token(session, args.manager_url, args.token, args.name, args.subject, args.scope, args.duration)
+    print(new_token)
+
+async def run_with_session(args):
+    async with aiohttp.ClientSession() as session:
+        res = 1
+        try:
+            res = await args.func(args, session)
+        except SystemExit:
+            raise # Pass on regular exit callse
+        except:
+            print("\n\nUnexpected error in %s:" % (args.subparser_name))
+            traceback.print_exc()
+        exit(res)
+
+
+if __name__ == '__main__':
+    progname = os.path.basename(sys.argv[0])
+
+    parser = ArgumentParser(prog=progname)
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='enable verbose output')
+    parser.add_argument('--debug', action='store_true',
+                        help='enable debugging output')
+    parser.add_argument('--token', help='use this token')
+    parser.add_argument('--token-file', help='use token from file')
+    subparsers = parser.add_subparsers(title='subcommands',
+                                       dest='subparser_name',
+                                       description='valid subcommands',
+                                       help='additional help')
+
+    create_parser = subparsers.add_parser('create', help='Create new build')
+    create_parser.add_argument('manager_url', help='remote repo manager url')
+    create_parser.set_defaults(func=create_command)
+
+    push_parser = subparsers.add_parser('push', help='Push to repo manager')
+    push_parser.add_argument('build_url', help='remote build url')
+    push_parser.add_argument('repo_path', help='local repository')
+    push_parser.add_argument('branches', nargs='*', help='branches to push')
+    push_parser.add_argument('--commit', action='store_true',
+                             help='commit build after pushing')
+    push_parser.add_argument('--publish', action='store_true',
+                             help='publish build after commiting')
+    push_parser.add_argument('--wait', action='store_true',
+                             help='wait for commit/publish to finish')
+    push_parser.add_argument('--minimal-token', action='store_true',
+                             help='Create minimal token for the upload')
+    push_parser.set_defaults(func=push_command)
+
+    commit_parser = subparsers.add_parser('commit', help='Commit build')
+    commit_parser.add_argument('--wait', action='store_true',
+                             help='wait for commit to finish')
+    commit_parser.add_argument('build_url', help='remote build url')
+    commit_parser.set_defaults(func=commit_command)
+
+    publish_parser = subparsers.add_parser('publish', help='Publish build')
+    publish_parser.add_argument('--wait', action='store_true',
+                             help='wait for publish to finish')
+    publish_parser.add_argument('build_url', help='remote build url')
+    publish_parser.set_defaults(func=publish_command)
+
+    purge_parser = subparsers.add_parser('purge', help='Purge build')
+    purge_parser.add_argument('build_url', help='remote build url')
+    purge_parser.set_defaults(func=purge_command)
+
+    create_token_parser = subparsers.add_parser('create-token', help='Create subset token')
+    create_token_parser.add_argument('manager_url', help='remote repo manager url')
+    create_token_parser.add_argument('name', help='Name')
+    create_token_parser.add_argument('subject', help='Subject')
+    create_token_parser.add_argument('scope', nargs='*', help='Scope')
+    create_token_parser.add_argument('--duration', help='Duration until expires, in seconds',
+                                     default=60*60*24, # Default duration is one day
+                                     type=int)
+    create_token_parser.set_defaults(func=create_token_command)
+
+    args = parser.parse_args()
+
+    loglevel = logging.WARNING
+    if args.verbose:
+        loglevel = logging.INFO
+    if args.debug:
+        loglevel = logging.DEBUG
+
+    logging.basicConfig(format='%(module)s: %(levelname)s: %(message)s',
+                        level=loglevel, stream=sys.stderr)
+
+    if not args.subparser_name:
+        print("No subcommand specified, see --help for usage")
+        exit(1)
+
+    if not args.token:
+        if args.token_file:
+            file = open(args.token_file, 'rb')
+            args.token = file.read().splitlines()[0].decode("utf-8").strip()
+        elif "REPO_TOKEN" in os.environ:
+            args.token = os.environ["REPO_TOKEN"]
+        else:
+            print("No token available, pass with --token, --token-file or $REPO_TOKEN")
+            exit(1)
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run_with_session(args))

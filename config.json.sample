@@ -1,13 +1,12 @@
 {
+    "repo-manager-uri": "http://localhost:8080",
+    "repo-manager-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJidWlsZCIsInNjb3BlIjpbImJ1aWxkIiwidXBsb2FkIiwicHVibGlzaCJdLCJuYW1lIjoidGVzdCIsImV4cCI6MTU3MjA5NTA3OX0.hP1vn8zrpqkyCblzXUl4HARfLDXRyxwwM6RBmxG1Fi0",
     "buildbot-port": 8010,
     "buildbot-uri": "http://localhost:8010/",
     "flathub-repo": "https://flathub.org/repo/",
-    "flathub-repo-path": "/vcs/gnome/flathub/repo",
+    "flathub-sources-path": "/vcs/gnome/flathub/repo/sources",
     "flathub-branch": "stable",
-    "flathub-gpg-homedir": "/vcs/gnome/flathub/gpg",
-    "flathub-gpg-key": "01DA958A7DC283BF1D3D208CF154092B3A7124D7",
-    "github-status-token": "",
+    "github-api-token": "",
     "admin-password": "test",
-    "github-change-secret": "",
-    "keep-builds": true
+    "github-change-secret": ""
 }

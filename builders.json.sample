@@ -2,7 +2,7 @@
     "worker1": {
         "password": "Bn6e82XlJAfe",
         "arches": [ "x86_64", "i386" ],
-        "update-repo": true,
+        "download-sources": true,
         "max-builds": 3
     },
     "worker2": {
