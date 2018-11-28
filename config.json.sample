@@ -8,5 +8,7 @@
     "flathub-branch": "stable",
     "github-api-token": "",
     "admin-password": "test",
+    "keep-test-build-days": 5,
+    "publish-default-delay-hours": 24,
     "github-change-secret": ""
 }
