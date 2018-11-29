@@ -82,9 +82,9 @@
             "git-branch": "master"
         },
         "org.freedesktop.Platform.GL.nvidia": {
-            "repo": "flatpak",
-            "git-module": "freedesktop-sdk-images.git",
-            "git-branch": "nvidia-drivers",
+            "repo": "default",
+            "git-module": "org.freedesktop.Platform.GL.nvidia.git",
+            "git-branch": "master",
             "only-arches": ["x86_64","i386"],
             "custom-buildcmd": true
         },
