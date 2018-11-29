@@ -85,7 +85,6 @@
             "repo": "default",
             "git-module": "org.freedesktop.Platform.GL.nvidia.git",
             "git-branch": "master",
-            "only-arches": ["x86_64","i386"],
             "custom-buildcmd": true
         },
         "org.freedesktop.BaseSdk/1.6": {
