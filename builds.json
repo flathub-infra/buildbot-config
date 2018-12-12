@@ -34,6 +34,12 @@
             "repo": "kde",
             "base": "org.freedesktop.Sdk/1.6",
             "git-module": "flatpak-kde-runtime.git",
+            "git-branch": "qt5.11"
+        },
+        "org.kde.Sdk/5.12": {
+            "repo": "kde",
+            "base": "org.freedesktop.Sdk/18.08",
+            "git-module": "flatpak-kde-runtime.git",
             "git-branch": "master"
         },
         "org.kde.KStyle.Adwaita/5.9": {
