@@ -40,7 +40,7 @@
             "repo": "kde",
             "base": "org.freedesktop.Sdk/18.08",
             "git-module": "flatpak-kde-runtime.git",
-            "git-branch": "master"
+            "git-branch": "qt5.12lts"
         },
         "org.kde.KStyle.Adwaita/5.9": {
             "repo": "default",
