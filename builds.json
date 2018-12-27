@@ -188,14 +188,6 @@
                 "org.gnome.Sdk//3.30",
                 "org.gnome.Platform//3.30"
             ]
-        },
-        "gnome-apps": {
-            "repo": "https://sdk.gnome.org/repo-app",
-            "key": "https://sdk.gnome.org/keys/gnome-sdk.gpg",
-            "repo": "https://sdk.gnome.org/gnome-apps.flatpakrepo",
-            "refs": [
-                "org.freedesktop.GlxInfo//1.6"
-            ]
         }
     }
 }
