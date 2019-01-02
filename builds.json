@@ -55,7 +55,12 @@
         "org.kde.KStyle.Adwaita/5.11": {
             "repo": "default",
             "git-module": "org.kde.KStyle.Adwaita.git",
-            "git-branch": "master"
+            "git-branch": "qt5.11"
+        },
+        "org.kde.KStyle.Adwaita/5.12": {
+            "repo": "default",
+            "git-module": "org.kde.KStyle.Adwaita.git",
+            "git-branch": "qt5.12lts"
         },
         "org.kde.KStyle.HighContrast/5.9": {
             "repo": "default",
@@ -70,7 +75,12 @@
         "org.kde.KStyle.HighContrast/5.11": {
             "repo": "default",
             "git-module": "org.kde.KStyle.HighContrast.git",
-            "git-branch": "master"
+            "git-branch": "qt5.11"
+        },
+        "org.kde.KStyle.HighContrast/5.12": {
+            "repo": "default",
+            "git-module": "org.kde.KStyle.HighContrast.git",
+            "git-branch": "qt5.12lts"
         },
         "org.kde.PlatformTheme.QGnomePlatform/5.9": {
             "repo": "default",
@@ -85,7 +95,12 @@
         "org.kde.PlatformTheme.QGnomePlatform/5.11": {
             "repo": "default",
             "git-module": "org.kde.PlatformTheme.QGnomePlatform.git",
-            "git-branch": "master"
+            "git-branch": "qt5.11"
+        },
+        "org.kde.PlatformTheme.QGnomePlatform/5.12": {
+            "repo": "default",
+            "git-module": "org.kde.PlatformTheme.QGnomePlatform.git",
+            "git-branch": "qt5.12lts"
         },
         "org.freedesktop.Platform.GL.nvidia": {
             "repo": "default",
