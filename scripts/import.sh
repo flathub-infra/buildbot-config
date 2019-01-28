@@ -73,7 +73,7 @@ if [ $COMMAND == 'import' ]; then
 
     # We generate deltas in the import repo here, so it happens outside the repo lock
     echo "Generating deltas"
-    flatpak build-update-repo --generate-static-deltas --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $IMPORT_REPO
+    flatpak build-update-repo --generate-static-deltas --static-delta-jobs=2 --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $IMPORT_REPO
 
     echo "${MIRROR_REFS}" > refs-to-merge
 fi
@@ -89,7 +89,7 @@ if [ $COMMAND == 'merge' ]; then
             --src-repo=${IMPORT_REPO} --no-update-summary $FLATHUB_REPO ${MIRROR_REFS}
 
     flatpak build-update-repo --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $FLATHUB_REPO
-    flatpak build-update-repo --generate-static-deltas --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $FLATHUB_REPO
+    flatpak build-update-repo --generate-static-deltas --static-delta-jobs=2  --gpg-homedir=$GPG_HOMEDIR --gpg-sign=$GPG_KEY $FLATHUB_REPO
 
     rm -rf ${IMPORT_REPO}
 fi
