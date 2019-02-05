@@ -29,8 +29,8 @@ if [ $COMMAND == 'import' ]; then
         for IMPORT_REF in $IMPORT_REFS; do
             IFS='/' read -ra IMPORT_PARTS <<< "$IMPORT_REF"
             [[ ${PARTS[1]} != ${IMPORT_PARTS[0]}* ]] && continue
-            [[ ${PARTS[2]} != ${IMPORT_PARTS[1]}*  && ${IMPORT_PARTS[1]} != "" ]] && continue
-            [[ ${PARTS[3]} != ${IMPORT_PARTS[2]}*  && ${IMPORT_PARTS[2]} != "" ]] && continue
+            [[ ${PARTS[2]} != ${IMPORT_PARTS[1]} && ${IMPORT_PARTS[1]} != "" ]] && continue
+            [[ ${PARTS[3]} != ${IMPORT_PARTS[2]} && ${IMPORT_PARTS[2]} != "" ]] && continue
             MIRROR_REFS="${MIRROR_REFS} $REF"
             break
         done
