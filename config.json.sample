@@ -4,6 +4,7 @@
     "buildbot-port": 8010,
     "buildbot-uri": "http://localhost:8010/",
     "flathub-repo": "https://flathub.org/repo/",
+    "flathub-beta-repo": "https://flathub.org/beta-repo/",
     "flathub-sources-path": "/vcs/gnome/flathub/repo/sources",
     "flathub-branch": "stable",
     "github-api-token": "",
