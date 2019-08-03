@@ -115,6 +115,11 @@
             "repo": "default",
             "git-module": "io.liri.BaseApp.git",
             "git-branch": "5.11"
+        },
+        "io.liri.BaseApp/stable": {
+            "repo": "default",
+            "git-module": "io.liri.BaseApp.git",
+            "git-branch": "stable"
         }
     },
     /* Lists of all the apps maintained by its upstream. Please keep sorted. */
