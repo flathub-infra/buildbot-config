@@ -110,11 +110,6 @@
             "repo": "default",
             "git-module": "io.atom.electron.BaseApp.git",
             "git-branch": "master"
-        },
-        "io.liri.BaseApp/5.11": {
-            "repo": "default",
-            "git-module": "io.liri.BaseApp.git",
-            "git-branch": "5.11"
         }
     },
     /* Lists of all the apps maintained by its upstream. Please keep sorted. */
