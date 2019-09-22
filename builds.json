@@ -98,20 +98,10 @@
             "custom-buildcmd": true,
             "extra-prefixes": [ "org.gnome.Platform" ]
         },
-        "org.electronjs.Electron2.BaseApp/stable": {
-            "repo": "default",
-            "git-module": "org.electronjs.Electron2.BaseApp.git",
-            "git-branch": "1.6"
-        },
         "io.atom.electron.BaseApp/stable": {
             "repo": "default",
             "git-module": "io.atom.electron.BaseApp.git",
             "git-branch": "1.6"
-        },
-        "org.electronjs.Electron2.BaseApp/18.08": {
-            "repo": "default",
-            "git-module": "org.electronjs.Electron2.BaseApp.git",
-            "git-branch": "master"
         },
         "io.atom.electron.BaseApp/18.08": {
             "repo": "default",
