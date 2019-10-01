@@ -97,16 +97,6 @@
             "base": "org.freedesktop.Sdk/1.6",
             "custom-buildcmd": true,
             "extra-prefixes": [ "org.gnome.Platform" ]
-        },
-        "io.atom.electron.BaseApp/stable": {
-            "repo": "default",
-            "git-module": "io.atom.electron.BaseApp.git",
-            "git-branch": "1.6"
-        },
-        "io.atom.electron.BaseApp/18.08": {
-            "repo": "default",
-            "git-module": "io.atom.electron.BaseApp.git",
-            "git-branch": "master"
         }
     },
     /* Lists of all the apps maintained by its upstream. Please keep sorted. */
