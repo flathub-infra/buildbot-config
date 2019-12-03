@@ -53,6 +53,14 @@
             "git-branch": "qt5.13",
             "custom-buildcmd": true
         },
+        "org.kde.Sdk/cups-support": {
+            "repo": "kde",
+            "base": "org.freedesktop.Sdk/19.08",
+            "git-module": "flatpak-kde-runtime.git",
+            "extra-prefixes": [ "org.kde.Platform" ],
+            "git-branch": "cups-support",
+            "custom-buildcmd": true
+        },
         "org.freedesktop.Platform.GL.nvidia": {
             "repo": "default",
             "git-module": "org.freedesktop.Platform.GL.nvidia.git",
