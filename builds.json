@@ -43,7 +43,8 @@
             "repo": "kde",
             "base": "org.freedesktop.Sdk/18.08",
             "git-module": "flatpak-kde-runtime.git",
-            "extra-prefixes": [ "org.kde.Platform" ]
+            "extra-prefixes": [ "org.kde.Platform" ],
+            "git-branch": "qt5.12lts"
         },
         "org.kde.Sdk/5.13": {
             "repo": "kde",
@@ -59,14 +60,6 @@
             "git-module": "flatpak-kde-runtime.git",
             "extra-prefixes": [ "org.kde.Platform" ],
             "git-branch": "qt5.14",
-            "custom-buildcmd": true
-        },
-        "org.kde.Sdk/cups-support": {
-            "repo": "kde",
-            "base": "org.freedesktop.Sdk/19.08",
-            "git-module": "flatpak-kde-runtime.git",
-            "extra-prefixes": [ "org.kde.Platform" ],
-            "git-branch": "cups-support",
             "custom-buildcmd": true
         },
         "org.freedesktop.Platform.GL.nvidia": {
