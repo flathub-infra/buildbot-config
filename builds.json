@@ -4,7 +4,7 @@
             "base": "https://github.com/flathub"
         },
         "kde": {
-            "base": "https://invent.kde.org/kde"
+            "base": "https://invent.kde.org/packaging"
         },
         "flatpak": {
             "base": "https://github.com/flatpak"
