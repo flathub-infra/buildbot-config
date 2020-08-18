@@ -55,6 +55,7 @@
             "custom-buildcmd": true
         },
         "org.kde.Sdk/5.14": {
+            "repo": "kde",
             "base": "org.freedesktop.Sdk/19.08",
             "git-module": "flatpak-kde-runtime",
             "extra-prefixes": [ "org.kde.Platform" ],
