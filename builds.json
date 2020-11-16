@@ -18,41 +18,12 @@
         }
     },
     "builds": {
-        "org.kde.Sdk/5.9": {
-            "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
-            "git-module": "flatpak-kde-runtime",
-            "git-branch": "qt5.9lts",
-            "extra-prefixes": [ "org.kde.Platform" ]
-        },
-        "org.kde.Sdk/5.10": {
-            "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
-            "git-module": "flatpak-kde-runtime",
-            "git-branch": "qt5.10",
-            "extra-prefixes": [ "org.kde.Platform" ]
-        },
-        "org.kde.Sdk/5.11": {
-            "repo": "kde",
-            "base": "org.freedesktop.Sdk/1.6",
-            "git-module": "flatpak-kde-runtime",
-            "extra-prefixes": [ "org.kde.Platform" ],
-            "git-branch": "qt5.11"
-        },
         "org.kde.Sdk/5.12": {
             "repo": "kde",
             "base": "org.freedesktop.Sdk/18.08",
             "git-module": "flatpak-kde-runtime",
             "extra-prefixes": [ "org.kde.Platform" ],
             "git-branch": "qt5.12lts"
-        },
-        "org.kde.Sdk/5.13": {
-            "repo": "kde",
-            "base": "org.freedesktop.Sdk/19.08",
-            "git-module": "flatpak-kde-runtime",
-            "extra-prefixes": [ "org.kde.Platform" ],
-            "git-branch": "qt5.13",
-            "custom-buildcmd": true
         },
         "org.kde.Sdk/5.14": {
             "repo": "kde",
