@@ -49,6 +49,14 @@
             "git-branch": "qt5.15lts-21.08",
             "custom-buildcmd": true
         },
+        "org.kde.Sdk/6.2": {
+            "repo": "kde",
+            "base": "org.freedesktop.Sdk/21.08",
+            "git-module": "flatpak-kde-runtime",
+            "extra-prefixes": [ "org.kde.Platform" ],
+            "git-branch": "qt6.2,
+            "custom-buildcmd": true
+        },
         "org.freedesktop.Platform.GL.nvidia": {
             "repo": "default",
             "git-module": "org.freedesktop.Platform.GL.nvidia.git",
