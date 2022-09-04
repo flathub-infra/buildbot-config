@@ -49,6 +49,14 @@
             "git-branch": "qt5.15lts-21.08",
             "custom-buildcmd": true
         },
+        "org.kde.Sdk/5.15-22.08": {
+            "repo": "kde",
+            "base": "org.freedesktop.Sdk/22.08",
+            "git-module": "flatpak-kde-runtime",
+            "extra-prefixes": [ "org.kde.Platform" ],
+            "git-branch": "qt5.15lts-22.08",
+            "custom-buildcmd": true
+        },
         "org.kde.Sdk/6.2": {
             "repo": "kde",
             "base": "org.freedesktop.Sdk/21.08",
